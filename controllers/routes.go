@@ -5,10 +5,12 @@ import (
     "github.com/labstack/echo/v4"
 )
 
-func RegisterRoutes(e *echo.Echo, classMaterialService service.ClassMaterialService, transcriptTimeService service.TranscriptTimeService) {
+func RegisterRoutes(e *echo.Echo, classMaterialService service.ClassMaterialService, 
+    transcriptTimeService service.TranscriptTimeService, keywordService service.KeywordService) {
     // Inicializando os controladores
     classMaterialController := NewClassMaterialController(classMaterialService)
     transcriptTimeController := NewTranscriptTimeController(transcriptTimeService)
+    keywordController := NewKeywordController(keywordService)
 
     // Rotas para ClassMaterial
     e.POST("/class-material", classMaterialController.Create)
@@ -23,4 +25,11 @@ func RegisterRoutes(e *echo.Echo, classMaterialService service.ClassMaterialServ
     e.GET("/transcript-time/:id", transcriptTimeController.FindByID)
     e.PUT("/transcript-time/:id", transcriptTimeController.Update)
     e.DELETE("/transcript-time/:id", transcriptTimeController.Delete)
+
+    // Rotas para Keyword
+    e.POST("/keyword", keywordController.Create)
+    e.GET("/keyword", keywordController.FindAll)
+    e.GET("/keyword/:id", keywordController.FindByID)
+    e.PUT("/keyword/:id", keywordController.Update)
+    e.DELETE("/keyword/:id", keywordController.Delete)
 }
