@@ -40,7 +40,13 @@ func (c *KeywordController) FindByID(ctx echo.Context) error {
     id := ctx.Param("id")
     keyword, err := c.service.FindByID(context.Background(), id)
     if err != nil {
-        return ctx.JSON(http.StatusNotFound, err.Error())
+        if err.Error() == "id é obrigatório" {
+            return ctx.JSON(http.StatusBadRequest, err.Error())
+        }
+        if err.Error() == "keyword não encontrado" {
+            return ctx.JSON(http.StatusNotFound, err.Error())
+        }
+        return ctx.JSON(http.StatusInternalServerError, err.Error())
     }
     return ctx.JSON(http.StatusOK, keyword)
 }
@@ -53,6 +59,12 @@ func (c *KeywordController) Update(ctx echo.Context) error {
     }
     err := c.service.Update(context.Background(), id, &keyword)
     if err != nil {
+        if err.Error() == "id é obrigatório" {
+            return ctx.JSON(http.StatusBadRequest, err.Error())
+        }
+        if err.Error() == "keyword não encontrado" {
+            return ctx.JSON(http.StatusNotFound, err.Error())
+        }
         return ctx.JSON(http.StatusInternalServerError, err.Error())
     }
     return ctx.JSON(http.StatusOK, keyword)
@@ -62,7 +74,13 @@ func (c *KeywordController) Delete(ctx echo.Context) error {
     id := ctx.Param("id")
     err := c.service.Delete(context.Background(), id)
     if err != nil {
-        return ctx.JSON(http.StatusNotFound, err.Error())
+        if err.Error() == "id é obrigatório" {
+            return ctx.JSON(http.StatusBadRequest, err.Error())
+        }
+        if err.Error() == "keyword não encontrado" {
+            return ctx.JSON(http.StatusNotFound, err.Error())
+        }
+        return ctx.JSON(http.StatusInternalServerError, err.Error())
     }
     return ctx.NoContent(http.StatusNoContent)
 }

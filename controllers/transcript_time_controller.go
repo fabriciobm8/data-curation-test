@@ -40,7 +40,13 @@ func (c *TranscriptTimeController) FindByID(ctx echo.Context) error {
     id := ctx.Param("id")
     transcriptTime, err := c.service.FindByID(context.Background(), id)
     if err != nil {
-        return ctx.JSON(http.StatusNotFound, err.Error())
+        if err.Error() == "id é obrigatório" {
+            return ctx.JSON(http.StatusBadRequest, err.Error())
+        }
+        if err.Error() == "transcriptTime não encontrado" {
+            return ctx.JSON(http.StatusNotFound, err.Error())
+        }
+        return ctx.JSON(http.StatusInternalServerError, err.Error())
     }
     return ctx.JSON(http.StatusOK, transcriptTime)
 }
@@ -53,6 +59,12 @@ func (c *TranscriptTimeController) Update(ctx echo.Context) error {
     }
     err := c.service.Update(context.Background(), id, &transcriptTime)
     if err != nil {
+        if err.Error() == "id é obrigatório" {
+            return ctx.JSON(http.StatusBadRequest, err.Error())
+        }
+        if err.Error() == "transcriptTime não encontrado" {
+            return ctx.JSON(http.StatusNotFound, err.Error())
+        }
         return ctx.JSON(http.StatusInternalServerError, err.Error())
     }
     return ctx.JSON(http.StatusOK, transcriptTime)
@@ -62,7 +74,13 @@ func (c *TranscriptTimeController) Delete(ctx echo.Context) error {
     id := ctx.Param("id")
     err := c.service.Delete(context.Background(), id)
     if err != nil {
-        return ctx.JSON(http.StatusNotFound, err.Error())
+        if err.Error() == "id é obrigatório" {
+            return ctx.JSON(http.StatusBadRequest, err.Error())
+        }
+        if err.Error() == "transcriptTime não encontrado" {
+            return ctx.JSON(http.StatusNotFound, err.Error())
+        }
+        return ctx.JSON(http.StatusInternalServerError, err.Error())
     }
     return ctx.NoContent(http.StatusNoContent)
 }
