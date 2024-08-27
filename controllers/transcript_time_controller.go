@@ -9,10 +9,10 @@ import (
 )
 
 type TranscriptTimeController struct {
-    service service.TranscriptTimeService
+    service *service.TranscriptTimeService
 }
 
-func NewTranscriptTimeController(service service.TranscriptTimeService) *TranscriptTimeController {
+func NewTranscriptTimeController(service *service.TranscriptTimeService) *TranscriptTimeController {
     return &TranscriptTimeController{service: service}
 }
 
@@ -29,11 +29,11 @@ func (c *TranscriptTimeController) Create(ctx echo.Context) error {
 }
 
 func (c *TranscriptTimeController) FindAll(ctx echo.Context) error {
-    transcriptTime, err := c.service.FindAll(context.Background())
+    transcriptTimes, err := c.service.FindAll(context.Background())
     if err != nil {
         return ctx.JSON(http.StatusInternalServerError, err.Error())
     }
-    return ctx.JSON(http.StatusOK, transcriptTime)
+    return ctx.JSON(http.StatusOK, transcriptTimes)
 }
 
 func (c *TranscriptTimeController) FindByID(ctx echo.Context) error {

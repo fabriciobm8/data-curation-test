@@ -6,38 +6,30 @@ import (
     "data-curation-test/repository"
 )
 
-type TranscriptTimeService interface {
-    Create(ctx context.Context, transcriptTime *models.TranscriptTime) error
-    FindAll(ctx context.Context) ([]models.TranscriptTime, error)
-    FindByID(ctx context.Context, id string) (*models.TranscriptTime, error)
-    Update(ctx context.Context, id string, transcriptTime *models.TranscriptTime) error
-    Delete(ctx context.Context, id string) error
-}
-
-type transcriptTimeService struct {
+type TranscriptTimeService struct {
     repo repository.TranscriptTimeRepository
 }
 
-func NewTranscriptTimeService(repo repository.TranscriptTimeRepository) TranscriptTimeService {
-    return &transcriptTimeService{repo: repo}
+func NewTranscriptTimeService(repo repository.TranscriptTimeRepository) *TranscriptTimeService {
+    return &TranscriptTimeService{repo: repo}
 }
 
-func (s *transcriptTimeService) Create(ctx context.Context, transcriptTime *models.TranscriptTime) error {
+func (s *TranscriptTimeService) Create(ctx context.Context, transcriptTime *models.TranscriptTime) error {
     return s.repo.Create(ctx, transcriptTime)
 }
 
-func (s *transcriptTimeService) FindAll(ctx context.Context) ([]models.TranscriptTime, error) {
+func (s *TranscriptTimeService) FindAll(ctx context.Context) ([]models.TranscriptTime, error) {
     return s.repo.FindAll(ctx)
 }
 
-func (s *transcriptTimeService) FindByID(ctx context.Context, id string) (*models.TranscriptTime, error) {
+func (s *TranscriptTimeService) FindByID(ctx context.Context, id string) (*models.TranscriptTime, error) {
     return s.repo.FindByID(ctx, id)
 }
 
-func (s *transcriptTimeService) Update(ctx context.Context, id string, transcriptTime *models.TranscriptTime) error {
+func (s *TranscriptTimeService) Update(ctx context.Context, id string, transcriptTime *models.TranscriptTime) error {
     return s.repo.Update(ctx, id, transcriptTime)
-}
+}    
 
-func (s *transcriptTimeService) Delete(ctx context.Context, id string) error {
+func (s *TranscriptTimeService) Delete(ctx context.Context, id string) error {
     return s.repo.Delete(ctx, id)
 }

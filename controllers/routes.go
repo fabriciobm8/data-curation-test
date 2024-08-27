@@ -5,8 +5,8 @@ import (
     "github.com/labstack/echo/v4"
 )
 
-func RegisterRoutes(e *echo.Echo, classMaterialService service.ClassMaterialService, 
-    transcriptTimeService service.TranscriptTimeService, keywordService service.KeywordService) {
+func RegisterRoutes(e *echo.Echo, classMaterialService *service.ClassMaterialService, 
+    transcriptTimeService *service.TranscriptTimeService, keywordService *service.KeywordService) {
     // Inicializando os controladores
     classMaterialController := NewClassMaterialController(classMaterialService)
     transcriptTimeController := NewTranscriptTimeController(transcriptTimeService)

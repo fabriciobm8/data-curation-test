@@ -20,7 +20,7 @@ type transcriptTimeRepository struct {
 }
 
 func NewTranscriptTimeRepository(client *mongo.Client) TranscriptTimeRepository {
-    collection := client.Database("class").Collection("transcript_time")
+    collection := client.Database("class").Collection("transcriptTime")
     return &transcriptTimeRepository{collection: collection}
 }
 

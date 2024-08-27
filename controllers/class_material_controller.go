@@ -9,10 +9,10 @@ import (
 )
 
 type ClassMaterialController struct {
-    service service.ClassMaterialService
+    service *service.ClassMaterialService
 }
 
-func NewClassMaterialController(service service.ClassMaterialService) *ClassMaterialController {
+func NewClassMaterialController(service *service.ClassMaterialService) *ClassMaterialController {
     return &ClassMaterialController{service: service}
 }
 

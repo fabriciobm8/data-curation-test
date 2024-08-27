@@ -9,10 +9,10 @@ import (
 )
 
 type KeywordController struct {
-    service service.KeywordService
+    service *service.KeywordService
 }
 
-func NewKeywordController(service service.KeywordService) *KeywordController {
+func NewKeywordController(service *service.KeywordService) *KeywordController {
     return &KeywordController{service: service}
 }
 

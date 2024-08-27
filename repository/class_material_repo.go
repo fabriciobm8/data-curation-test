@@ -20,7 +20,7 @@ type classMaterialRepository struct {
 }
 
 func NewClassMaterialRepository(client *mongo.Client) ClassMaterialRepository {
-    collection := client.Database("class").Collection("class_material")
+    collection := client.Database("class").Collection("classMaterial")
     return &classMaterialRepository{collection: collection}
 }
 
