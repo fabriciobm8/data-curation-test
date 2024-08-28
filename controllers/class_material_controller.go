@@ -84,3 +84,44 @@ func (c *ClassMaterialController) Delete(ctx echo.Context) error {
     }
     return ctx.NoContent(http.StatusNoContent)
 }
+
+func (c *ClassMaterialController) UpdateIsSuccessfulClassMaterial(ctx echo.Context) error {
+    var classMaterial models.ClassMaterial
+    var message struct {
+        Message string `json:"message"`
+    }
+
+    // Bind JSON request body to ClassMaterial
+    if err := ctx.Bind(&classMaterial); err != nil {
+        message.Message = err.Error()
+        return ctx.JSON(http.StatusBadRequest, message)
+    }
+
+    // Check for ID in the URL parameter
+    id := ctx.Param("id")
+    if id == "" {
+        message.Message = "ID é obrigatório"
+        return ctx.JSON(http.StatusBadRequest, message)
+    }
+    classMaterial.ID = id
+
+    // Check for uuidCourse in the query parameter or request body
+    uuidCourse := ctx.QueryParam("uuidCourse")
+    if uuidCourse == "" {
+        uuidCourse = classMaterial.UuidCourse
+    }
+    if uuidCourse == "" {
+        message.Message = "uuidCourse é obrigatório"
+        return ctx.JSON(http.StatusBadRequest, message)
+    }
+    classMaterial.UuidCourse = uuidCourse
+
+    // Call the service method to update evaluation
+    if err := c.service.UpdateIsSuccessful(context.Background(), &classMaterial, classMaterial.IsSuccessful); err != nil {
+        message.Message = err.Error()
+        return ctx.JSON(http.StatusInternalServerError, message)
+    }
+
+    message.Message = "Successfully updated"
+    return ctx.JSON(http.StatusOK, message)
+}

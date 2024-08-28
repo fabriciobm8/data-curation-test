@@ -5,6 +5,8 @@ import (
     "data-curation-test/models"
     "go.mongodb.org/mongo-driver/bson"
     "go.mongodb.org/mongo-driver/mongo"
+    "log"
+    "errors"
 )
 
 type ClassMaterialRepository interface {
@@ -13,6 +15,8 @@ type ClassMaterialRepository interface {
     FindByID(ctx context.Context, id string) (*models.ClassMaterial, error)
     Update(ctx context.Context, id string, classMaterial *models.ClassMaterial) error
     Delete(ctx context.Context, id string) error
+    UpdateIsSuccessful(ctx context.Context, classMaterial *models.ClassMaterial, isSuccessful bool) error
+    
 }
 
 type classMaterialRepository struct {
@@ -65,4 +69,32 @@ func (r *classMaterialRepository) Update(ctx context.Context, id string, classMa
 func (r *classMaterialRepository) Delete(ctx context.Context, id string) error {
     _, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
     return err
+}
+
+func (r *classMaterialRepository) UpdateIsSuccessful(ctx context.Context, classMaterial *models.ClassMaterial, isSuccessful bool) error {
+    // Verifica se o documento existe com base no ID fornecido
+    filter := bson.M{
+        "_id": classMaterial.ID,  // Certifique-se de que o ID está sendo utilizado como chave
+    }
+    
+    // Define o campo que será atualizado
+    update := bson.M{
+        "$set": bson.M{"isSuccessful": isSuccessful},
+    }
+    
+    // Executa a atualização
+    result, err := r.collection.UpdateOne(ctx, filter, update)
+    if err != nil {
+        log.Println("Error updating class material:", err.Error())
+        return err
+    }
+
+    // Verifica se algum documento foi modificado
+    if result.ModifiedCount == 0 {
+        log.Println("No documents were updated")
+        return errors.New("nenhum documento foi atualizado, verifique o ID fornecido")
+    }
+
+    log.Println("Updated class material successfully")
+    return nil
 }

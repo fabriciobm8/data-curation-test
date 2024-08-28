@@ -101,3 +101,21 @@ func (s *ClassMaterialService) Delete(ctx context.Context, id string) error {
     
     return s.repo.Delete(ctx, id)
 }
+
+func (s *ClassMaterialService) UpdateIsSuccessful(ctx context.Context, classMaterial *models.ClassMaterial, isSuccessful bool) error {
+    if classMaterial.UuidCourse == "" || classMaterial.ID == "" {
+        return errors.New("uuidCourse e ID são obrigatórios")
+    }
+
+    // Verifica se o ClassMaterial existe antes de atualizar
+    existingCM, err := s.repo.FindByID(ctx, classMaterial.ID)
+    if err != nil {
+        return err // retorna o erro se não encontrar
+    }
+
+    // Atualiza o campo isSuccessful
+    existingCM.IsSuccessful = isSuccessful
+
+    // Passa o objeto atualizado para o repositório
+    return s.repo.UpdateIsSuccessful(ctx, existingCM, isSuccessful)
+}

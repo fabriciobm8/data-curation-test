@@ -18,6 +18,7 @@ func RegisterRoutes(e *echo.Echo, classMaterialService *service.ClassMaterialSer
     e.GET("/class-material/:id", classMaterialController.FindByID)
     e.PUT("/class-material/:id", classMaterialController.Update)
     e.DELETE("/class-material/:id", classMaterialController.Delete)
+    e.PATCH("/class-material/update-isSuccessful/:id", classMaterialController.UpdateIsSuccessfulClassMaterial)
 
     // Rotas para TranscriptTime
     e.POST("/transcript-time", transcriptTimeController.Create)
