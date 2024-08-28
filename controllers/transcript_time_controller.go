@@ -110,3 +110,17 @@ func (c *TranscriptTimeController) UpdateStartEndTimeTranscriptTime(ctx echo.Con
     return ctx.JSON(http.StatusOK, map[string]string{"message": "TranscriptTime atualizado com sucesso"})
 
   }
+
+  func (c *TranscriptTimeController) UpdateTranscripts(ctx echo.Context) error {
+    var transcriptTimeList []models.TranscriptTime
+    if err := ctx.Bind(&transcriptTimeList); err != nil {
+      return ctx.JSON(http.StatusBadRequest, err.Error())
+    }
+    
+    if err := c.service.UpdateTranscripts(context.Background(), transcriptTimeList); err != nil {
+      return ctx.JSON(http.StatusInternalServerError, err.Error())
+    }
+    
+    //return ctx.NoContent(http.StatusNoContent)
+    return ctx.JSON(http.StatusOK, map[string]string{"message": "Transcrip(s) atualizado(s) com sucesso"})
+  }

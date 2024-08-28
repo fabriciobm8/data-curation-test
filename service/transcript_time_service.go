@@ -121,3 +121,14 @@ func (s *TranscriptTimeService) UpdateTranscriptTime(ctx context.Context, id str
     
     return s.repo.UpdateTranscript(ctx, id, update)
   }
+
+ 
+
+func (s *TranscriptTimeService) UpdateTranscripts(ctx context.Context, transcriptTimeList []models.TranscriptTime) error {
+  for _, transcriptTime := range transcriptTimeList {
+    if err := s.repo.Update(ctx, transcriptTime.ID, &transcriptTime); err != nil {
+      return err
+    }
+  }
+  return nil
+}

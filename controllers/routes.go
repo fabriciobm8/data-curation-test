@@ -27,6 +27,7 @@ func RegisterRoutes(e *echo.Echo, classMaterialService *service.ClassMaterialSer
     e.PUT("/transcript-time/:id", transcriptTimeController.Update)
     e.DELETE("/transcript-time/:id", transcriptTimeController.Delete)
     e.PATCH("/transcript-time/:id", transcriptTimeController.UpdateStartEndTimeTranscriptTime)
+    e.PATCH("/transcript-time/transcripts", transcriptTimeController.UpdateTranscripts)
 
     // Rotas para Keyword
     e.POST("/keyword", keywordController.Create)
