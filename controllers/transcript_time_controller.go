@@ -84,3 +84,29 @@ func (c *TranscriptTimeController) Delete(ctx echo.Context) error {
     }
     return ctx.NoContent(http.StatusNoContent)
 }
+
+func (c *TranscriptTimeController) UpdateStartEndTimeTranscriptTime(ctx echo.Context) error {
+    id := ctx.Param("id")
+    
+    var transcriptTimePatch models.TranscriptTime
+    if err := ctx.Bind(&transcriptTimePatch); err != nil {
+      return ctx.JSON(http.StatusBadRequest, err.Error())
+    }
+    
+    err := c.service.UpdateTranscriptTime(context.Background(), id, transcriptTimePatch)
+    if err != nil {
+      if err.Error() == "id é obrigatório" {
+        return ctx.JSON(http.StatusBadRequest, err.Error())
+      }
+      if err.Error() == "nenhum campo fornecido para atualização" {
+        return ctx.JSON(http.StatusBadRequest, err.Error())
+      }
+      if err.Error() == "transcriptTime não encontrado" {
+        return ctx.JSON(http.StatusNotFound, err.Error())
+      }
+      return ctx.JSON(http.StatusInternalServerError, err.Error())
+    }
+    
+    return ctx.JSON(http.StatusOK, map[string]string{"message": "TranscriptTime atualizado com sucesso"})
+
+  }

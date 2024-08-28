@@ -6,6 +6,7 @@ import (
     "data-curation-test/repository"
     "errors"
     "go.mongodb.org/mongo-driver/mongo"
+    "go.mongodb.org/mongo-driver/bson"
 )
 
 type TranscriptTimeService struct {
@@ -93,3 +94,30 @@ func (s *TranscriptTimeService) Delete(ctx context.Context, id string) error {
     
     return s.repo.Delete(ctx, id)
 }
+
+func (s *TranscriptTimeService) UpdateTranscriptTime(ctx context.Context, id string, transcriptTimePatch models.TranscriptTime) error {
+    if id == "" {
+      return errors.New("id é obrigatório")
+    }
+    
+    update := bson.M{}
+    if transcriptTimePatch.StartTime != 0 {
+      update["startTime"] = transcriptTimePatch.StartTime
+    }
+    if transcriptTimePatch.EndTime != 0 {
+      update["endTime"] = transcriptTimePatch.EndTime
+    }
+    
+    // Check if there are any fields to update before calling repository
+    if len(update) == 0 {
+      return errors.New("nenhum campo fornecido para atualização")
+    }
+    
+    // Verify if TranscriptTime exists before update
+    existingTT, _ := s.repo.FindByID(ctx, id)
+    if existingTT == nil {
+      return errors.New("transcriptTime não encontrado")
+    }
+    
+    return s.repo.UpdateTranscript(ctx, id, update)
+  }

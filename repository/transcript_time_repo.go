@@ -13,6 +13,7 @@ type TranscriptTimeRepository interface {
     FindByID(ctx context.Context, id string) (*models.TranscriptTime, error)
     Update(ctx context.Context, id string, transcriptTime *models.TranscriptTime) error
     Delete(ctx context.Context, id string) error
+    UpdateTranscript(ctx context.Context, id string, update bson.M) error
 }
 
 type transcriptTimeRepository struct {
@@ -66,3 +67,9 @@ func (r *transcriptTimeRepository) Delete(ctx context.Context, id string) error 
     _, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
     return err
 }
+
+func (r *transcriptTimeRepository) UpdateTranscript(ctx context.Context, id string, update bson.M) error {
+    filter := bson.M{"_id": id}
+    _, err := r.collection.UpdateOne(ctx, filter, bson.M{"$set": update})
+    return err
+  }
