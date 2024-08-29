@@ -13,6 +13,9 @@ type KeywordRepository interface {
     FindByID(ctx context.Context, id string) (*models.Keyword, error)
     Update(ctx context.Context, id string, keyword *models.Keyword) error
     Delete(ctx context.Context, id string) error
+    FindByTranscriptTimeID(ctx context.Context, transcriptTimeId string) ([]models.Keyword, error)
+
+
 }
 
 type keywordRepository struct {
@@ -65,4 +68,23 @@ func (r *keywordRepository) Update(ctx context.Context, id string, keyword *mode
 func (r *keywordRepository) Delete(ctx context.Context, id string) error {
     _, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
     return err
+}
+
+func (r *keywordRepository) FindByTranscriptTimeID(ctx context.Context, transcriptTimeId string) ([]models.Keyword, error) {
+    var keywords []models.Keyword
+    cursor, err := r.collection.Find(ctx, bson.M{"transcriptTimeId": transcriptTimeId})
+    if err != nil {
+        return nil, err
+    }
+    defer cursor.Close(ctx)
+    
+    for cursor.Next(ctx) {
+        var keyword models.Keyword
+        if err := cursor.Decode(&keyword); err != nil {
+            return nil, err
+        }
+        keywords = append(keywords, keyword)
+    }
+    
+    return keywords, nil
 }

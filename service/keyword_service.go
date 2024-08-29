@@ -97,3 +97,28 @@ func (s *KeywordService) Delete(ctx context.Context, id string) error {
     
     return s.repo.Delete(ctx, id)
 }
+
+func (s *KeywordService) UpdateKeywordsByTranscriptTimeID(ctx context.Context, transcriptTimeId string, keywords []string) error {
+    if transcriptTimeId == "" {
+        return errors.New("transcriptTimeId é obrigatório")
+    }
+    
+    // Encontre todos os documentos com o transcriptTimeId dado
+    keywordDocs, err := s.repo.FindByTranscriptTimeID(ctx, transcriptTimeId)
+    if err != nil {
+        return err
+    }
+    
+    if len(keywords) != len(keywordDocs) {
+        return errors.New("o número de keywords fornecidas não corresponde ao número de documentos encontrados")
+    }
+    
+    for i, keywordDoc := range keywordDocs {
+        keywordDoc.Keyword = keywords[i]
+        if err := s.repo.Update(ctx, keywordDoc.ID, &keywordDoc); err != nil {
+            return err
+        }
+    }
+    
+    return nil
+}

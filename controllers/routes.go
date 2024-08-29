@@ -35,4 +35,5 @@ func RegisterRoutes(e *echo.Echo, classMaterialService *service.ClassMaterialSer
     e.GET("/keyword/:id", keywordController.FindByID)
     e.PUT("/keyword/:id", keywordController.Update)
     e.DELETE("/keyword/:id", keywordController.Delete)
+    e.PATCH("/keywords/update-by-transcript-time-id", keywordController.UpdateKeywordsByTranscriptTimeID)
 }

@@ -84,3 +84,25 @@ func (c *KeywordController) Delete(ctx echo.Context) error {
     }
     return ctx.NoContent(http.StatusNoContent)
 }
+
+type UpdateKeywordsRequest struct {
+    TranscriptTimeId string   `json:"transcriptTimeId"`
+    Keywords         []string `json:"keywords"`
+}
+
+func (c *KeywordController) UpdateKeywordsByTranscriptTimeID(ctx echo.Context) error {
+    var req UpdateKeywordsRequest
+    if err := ctx.Bind(&req); err != nil {
+        return ctx.JSON(http.StatusBadRequest, err.Error())
+    }
+
+    err := c.service.UpdateKeywordsByTranscriptTimeID(context.Background(), req.TranscriptTimeId, req.Keywords)
+    if err != nil {
+        if err.Error() == "transcriptTimeId é obrigatório" || err.Error() == "o número de keywords fornecidas não corresponde ao número de documentos encontrados" {
+            return ctx.JSON(http.StatusBadRequest, err.Error())
+        }
+        return ctx.JSON(http.StatusInternalServerError, err.Error())
+    }
+    
+    return ctx.NoContent(http.StatusNoContent)
+}
